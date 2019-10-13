@@ -110,3 +110,6 @@ overwritten with the tags from the update
 - You should ensure `put` steps to Grafana in `try` and `ensure` + `try` task
 steps so that failure to create/update regions in Grafana does not impact your
 pipeline.
+
+- Currently updating individual dashboards and panels is not supported. Use
+tags to view your resources instead.
