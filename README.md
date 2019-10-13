@@ -1,5 +1,8 @@
-`grafana-annotation-resource`
+`paas-grafana-annotation-resource`
 -----------------------------
+
+![CI Workflow GitHub Actions Badge](https://github.com/alphagov/paas-grafana-annotation-resource/workflows/ci/badge.svg)
+![License GitHub Badge](https://img.shields.io/github/license/alphagov/paas-grafana-annotation-resource?style=plastic)
 
 A resource for adding annotations to Grafana dashboards.
 
