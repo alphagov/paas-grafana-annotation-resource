@@ -17,6 +17,14 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
 
+      - name: deps
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+          go install github.com/onsi/ginkgo/ginkgo
+
+          go mod download
+
       - name: test
         run: make test
 
