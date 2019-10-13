@@ -1,0 +1,22 @@
+version: '3'
+
+networks:
+  grafana: {}
+
+services:
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    expose:
+      - '3000'
+    networks:
+      - grafana
+
+  resource:
+    build: .
+    command: sleep 3600
+    depends_on:
+      - grafana
+    networks:
+      - grafana
