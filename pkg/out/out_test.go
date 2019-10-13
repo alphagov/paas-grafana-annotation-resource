@@ -189,17 +189,12 @@ var _ = Describe("Out", func() {
 				),
 			)
 
-			sourceTemplate := "this will be overridden by the param template"
-			paramsTemplate := "${BUILD_ID} ${ENV_VAR_SOURCE} ${ENV_VAR_PARAM}"
-
 			req = types.OutRequest{
 				Source: types.ResourceSource{
 					URL: "http://grafana",
 
 					Username: username,
 					Password: password,
-
-					Template: &sourceTemplate,
 
 					Tags: []string{"s2", "s1"},
 					Env: map[string]string{
@@ -208,7 +203,9 @@ var _ = Describe("Out", func() {
 				},
 
 				Params: types.ResourceParams{
-					Template: &paramsTemplate,
+					Template: stringAddress(
+						"${BUILD_ID} ${ENV_VAR_SOURCE} ${ENV_VAR_PARAM}",
+					),
 
 					Tags: []string{"p2", "p1"},
 					Env: map[string]string{

@@ -10,8 +10,6 @@ type ResourceSource struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 
-	Template *string `json:"template"`
-
 	Tags []string          `json:"tags"`
 	Env  map[string]string `json:"env"`
 }

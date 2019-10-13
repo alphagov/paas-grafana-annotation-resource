@@ -56,9 +56,6 @@ func outCreate(
 	combinedTags := tags.CombineTags(req.Source.Tags, req.Params.Tags)
 
 	actualTemplate := defaultTemplate
-	if req.Source.Template != nil {
-		actualTemplate = *req.Source.Template
-	}
 	if req.Params.Template != nil {
 		actualTemplate = *req.Params.Template
 	}
