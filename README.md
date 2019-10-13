@@ -50,7 +50,7 @@ resource_types:
   - name: grafana-annotation
     type: docker-image
     source:
-      repository: tlwr/grafana-annotation-resource
+      repository: gdsre/grafana-annotation-resource
       tag: latest
 ```
 
