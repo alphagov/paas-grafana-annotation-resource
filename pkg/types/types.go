@@ -51,11 +51,10 @@ type InOutResponse struct {
 }
 
 type GrafanaCreateAnnotationRequest struct {
-	Time     int64    `json:"time"`
-	TimeEnd  int64    `json:"timeEnd"`
-	Tags     []string `json:"tags"`
-	Text     string   `json:"text"`
-	IsRegion bool     `json:"isRegion"`
+	Time    int64    `json:"time"`
+	TimeEnd int64    `json:"timeEnd"`
+	Tags    []string `json:"tags"`
+	Text    string   `json:"text"`
 }
 
 type GrafanaUpdateAnnotationRequest struct {
@@ -67,5 +66,4 @@ type GrafanaUpdateAnnotationRequest struct {
 type GrafanaCreateAnnotationResponse struct {
 	Message string `json:"message"`
 	ID      int    `json:"id"`
-	EndID   int    `json:"endId"`
 }

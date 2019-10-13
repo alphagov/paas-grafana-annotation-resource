@@ -79,11 +79,10 @@ func outCreate(
 	currentTime := time.Now().Unix() * int64(1000)
 
 	requestBody := types.GrafanaCreateAnnotationRequest{
-		Time:     currentTime,
-		TimeEnd:  currentTime + 1000,
-		Tags:     combinedTags,
-		Text:     text,
-		IsRegion: true, // Ignored in later versions of Grafana
+		Time:    currentTime,
+		TimeEnd: currentTime + 1000,
+		Tags:    combinedTags,
+		Text:    text,
 	}
 
 	requestBodyBytes, err := json.Marshal(requestBody)
@@ -133,16 +132,7 @@ func outCreate(
 		return types.InOutResponse{}, err
 	}
 
-	var annotationID string
-
-	if parsedResponse.EndID == 0 {
-		// Grafana 6.3 onwards use a single annotation ID
-		annotationID = fmt.Sprintf("%d", parsedResponse.ID)
-	} else {
-		// Grafana 6.0-6.2 have a separate ID for end of an annotation
-		annotationID = fmt.Sprintf("%d", parsedResponse.EndID)
-	}
-
+	annotationID := fmt.Sprintf("%d", parsedResponse.ID)
 	err = ioutil.WriteFile(pathToIDFile(dirPath), []byte(annotationID), 0644)
 
 	if err != nil {
