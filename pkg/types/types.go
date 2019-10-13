@@ -5,7 +5,7 @@ type ResourceVersion struct {
 }
 
 type ResourceSource struct {
-	URL string `json:"uri"`
+	URL string `json:"url"`
 
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -46,8 +46,8 @@ type OutRequest struct {
 }
 
 type InOutResponse struct {
-	Version  ResourceVersion `json:"version"`
-	Metadata []ResourceMetadataPair
+	Version  ResourceVersion        `json:"version"`
+	Metadata []ResourceMetadataPair `json:"metadata"`
 }
 
 type GrafanaCreateAnnotationRequest struct {
