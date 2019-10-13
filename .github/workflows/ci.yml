@@ -20,13 +20,15 @@ jobs:
       - name: deps
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
-
           go install github.com/onsi/ginkgo/ginkgo
-
           go mod download
 
       - name: test
-        run: make test
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          make test
 
       - name: integration-test
-        run: make integration-test
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          make integration-test
