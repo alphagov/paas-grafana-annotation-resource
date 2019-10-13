@@ -24,20 +24,13 @@ func Out(
 	req types.OutRequest,
 	env map[string]string,
 	dirPath string) (types.InOutResponse, error) {
-	_, err := os.Stat(pathToIDFile(dirPath))
 
-	if err == nil {
-		// put to resource, id file exists, updating existing annotation
-		return outUpdate(req, env, dirPath)
-	}
-
-	if os.IsNotExist(err) {
-		// put to resource, id file does not exist, creating new annotation
+	if req.Params.Path == nil {
+		// when we are not given a path, we are creating a new annotation
 		return outCreate(req, env, dirPath)
 	}
 
-	// unknown error
-	return types.InOutResponse{}, err
+	return outUpdate(req, env, dirPath)
 }
 
 func addGrafanaAPIHeaders(req *http.Request) {

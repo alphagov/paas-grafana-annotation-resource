@@ -17,6 +17,8 @@ type ResourceSource struct {
 }
 
 type ResourceParams struct {
+	Path *string `json:"path"`
+
 	Template *string `json:"template"`
 
 	Tags []string          `json:"tags"`

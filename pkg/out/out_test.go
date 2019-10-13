@@ -23,6 +23,10 @@ func TestCheck(t *testing.T) {
 	RunSpecs(t, "Out Suite")
 }
 
+func stringAddress(s string) *string {
+	return &s
+}
+
 var _ = Describe("Out", func() {
 	const (
 		username = "admin"
@@ -30,7 +34,7 @@ var _ = Describe("Out", func() {
 	)
 
 	var (
-		resourceDirectory *string
+		workingDirectory *string
 
 		basicAuthCheckResponderWrapper = func(
 			wrapped httpmock.Responder,
@@ -86,15 +90,15 @@ var _ = Describe("Out", func() {
 		dir, err := ioutil.TempDir("", "")
 		Expect(err).NotTo(HaveOccurred())
 
-		resourceDirectory = &dir
+		workingDirectory = &dir
 	})
 
 	AfterEach(func() {
-		if resourceDirectory != nil {
-			os.RemoveAll(*resourceDirectory)
+		if workingDirectory != nil {
+			os.RemoveAll(*workingDirectory)
 		}
 
-		resourceDirectory = nil
+		workingDirectory = nil
 	})
 
 	Context("when validating the source", func() {
@@ -183,14 +187,14 @@ var _ = Describe("Out", func() {
 		})
 
 		It("should return the created id within the version", func() {
-			resp, err := out.Out(req, env, *resourceDirectory)
+			resp, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(resp.Version.ID).To(Equal("12345"))
 		})
 
 		It("should return metadata", func() {
-			resp, err := out.Out(req, env, *resourceDirectory)
+			resp, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(resp.Metadata).To(HaveLen(3))
@@ -210,10 +214,10 @@ var _ = Describe("Out", func() {
 		})
 
 		It("should create an 'id' file containing the version", func() {
-			_, err := out.Out(req, env, *resourceDirectory)
+			_, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
-			idPath := path.Join(*resourceDirectory, "id")
+			idPath := path.Join(*workingDirectory, "id")
 
 			_, err = os.Stat(idPath)
 			Expect(err).NotTo(HaveOccurred(), "Out should create a file 'id'")
@@ -237,8 +241,14 @@ var _ = Describe("Out", func() {
 		)
 
 		BeforeEach(func() {
+			Expect(
+				os.Mkdir(path.Join(*workingDirectory, "resource-name"), 0755),
+			).NotTo(HaveOccurred(), "Could not 'create resource-name' directory")
+
 			Expect(ioutil.WriteFile(
-				path.Join(*resourceDirectory, "id"), []byte(annotationID), 0644,
+				path.Join(*workingDirectory, "resource-name", "id"),
+				[]byte(annotationID),
+				0644,
 			)).NotTo(HaveOccurred(), "Could not write id file needed for test")
 
 			httpmock.RegisterResponder(
@@ -282,14 +292,14 @@ var _ = Describe("Out", func() {
 		})
 
 		It("should return the created id within the version", func() {
-			resp, err := out.Out(req, env, *resourceDirectory)
+			resp, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(resp.Version.ID).To(Equal("12345"))
 		})
 
-		It("should return limited metadata", func() {
-			resp, err := out.Out(req, env, *resourceDirectory)
+		It("should return metadata", func() {
+			resp, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(resp.Metadata).To(HaveLen(1))
