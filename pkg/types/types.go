@@ -51,10 +51,9 @@ type InOutResponse struct {
 }
 
 type GrafanaCreateAnnotationRequest struct {
-	Time    int64    `json:"time"`
-	TimeEnd int64    `json:"timeEnd"`
-	Tags    []string `json:"tags"`
-	Text    string   `json:"text"`
+	Time int64    `json:"time"`
+	Tags []string `json:"tags"`
+	Text string   `json:"text"`
 }
 
 type GrafanaUpdateAnnotationRequest struct {

@@ -175,10 +175,6 @@ var _ = Describe("Out", func() {
 							"==", time.Now().Unix()*int64(1000), 1500,
 						), "Time should approximately be now")
 
-						Expect(requestBody.TimeEnd).To(BeNumerically(
-							"==", time.Now().Unix()*int64(1000), 1500,
-						), "TimeEnd should approximately be now")
-
 						responder := httpmock.NewStringResponder(
 							200,
 							`{ "message":"Annotation added", "id": 12345 }`,

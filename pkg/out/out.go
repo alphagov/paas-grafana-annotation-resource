@@ -79,10 +79,9 @@ func outCreate(
 	currentTime := time.Now().Unix() * int64(1000)
 
 	requestBody := types.GrafanaCreateAnnotationRequest{
-		Time:    currentTime,
-		TimeEnd: currentTime + 1000,
-		Tags:    combinedTags,
-		Text:    text,
+		Time: currentTime,
+		Tags: combinedTags,
+		Text: text,
 	}
 
 	requestBodyBytes, err := json.Marshal(requestBody)
