@@ -9,6 +9,33 @@ can be used to add and update annotations using tags.
 Usage
 -----
 
+See the example below for all the pipeline code.
+
+If you create an annotation using with `put: resource-name`, it will be a
+point-in-time annotation. This put step will write the ID of the current
+resource to `resource-name/id`.
+
+In order to make it the annotation a region annotation, put to the resource
+again, but pass the resource name to the path `path` param.  This will update
+the annotation, and make it a region beginning when the resource was created,
+and ending at the current time.
+
+```
+  # Create a point-in-time annotation, e.g. a single event
+- put: my-grafana-annotation
+
+- task: do-a-thing-that-takes-some-time
+
+  # Update the point-in-time annotation to be a region
+  # The region's duration will be the time taken by the task
+- put: my-grafana-annotation
+  params:
+    path: my-grafana-annotation
+```
+
+Example
+-------
+
 In the following example, imagine we are running smoke tests from Concourse,
 and we want to annotate our Grafana dashboard with a region during which the
 smoke tests ran.
@@ -72,7 +99,14 @@ jobs:
           path: run-smoke-tests-annotation
 ```
 
-Note: the tags in source and params are merged.
+Notes
+-----
 
-Note: when an existing annotation is updated, the tags from creation are
-overwritten with the tags from the update.
+- The tags in source and params are merged
+
+- When an existing annotation is updated, the tags from creation are
+overwritten with the tags from the update
+
+- You should ensure `put` steps to Grafana in `try` and `ensure` + `try` task
+steps so that failure to create/update regions in Grafana does not impact your
+pipeline.
