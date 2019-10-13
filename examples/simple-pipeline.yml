@@ -1,0 +1,57 @@
+resource_types:
+  - name: grafana-annotation
+    type: docker-image
+    source:
+      repository: tlwr/grafana-annotation-resource
+      tag: latest
+
+resources:
+  - name: created-annotation
+    type: grafana-annotation
+    source:
+      url: http://grafana:3000
+      username: admin
+      password: admin
+
+  - name: created-and-updated-annotation
+    type: grafana-annotation
+    source:
+      url: http://grafana:3000
+      username: admin
+      password: admin
+      tags:
+        - concourse
+        - resource
+
+jobs:
+  - name: create-annotation
+    plan:
+      - put: created-annotation
+
+  - name: create-and-update-annotation
+    plan:
+      - put: created-and-updated-annotation
+
+      - task: wait-a-bit
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: alpine
+              tag: 3.9
+          run:
+            path: /bin/ash
+            args:
+              - -c
+              - |
+                sleep 1
+
+      - put: created-and-updated-annotation
+        params:
+          tags:
+            - concourse
+            - job
+          # path to the resource name
+          # so that the ID from creation time is the same
+          path: created-and-updated-annotation
