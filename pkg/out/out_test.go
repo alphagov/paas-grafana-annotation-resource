@@ -102,9 +102,46 @@ var _ = Describe("Out", func() {
 	})
 
 	Context("when validating the source", func() {
-	})
+		It("returns an error when there is no URL", func() {
+			_, err := out.Out(
+				types.OutRequest{Source: types.ResourceSource{}},
+				map[string]string{},
+				"",
+			)
 
-	Context("when validating the params", func() {
+			Expect(err).To(MatchError(ContainSubstring(
+				"URL is required in the source definition",
+			)))
+		})
+
+		It("returns an error when there is no username", func() {
+			_, err := out.Out(
+				types.OutRequest{Source: types.ResourceSource{
+					URL: "http://grafana",
+				}},
+				map[string]string{},
+				"",
+			)
+
+			Expect(err).To(MatchError(ContainSubstring(
+				"Username is required in the source definition",
+			)))
+		})
+
+		It("returns an error when there is no password", func() {
+			_, err := out.Out(
+				types.OutRequest{Source: types.ResourceSource{
+					URL:      "http://grafana",
+					Username: username,
+				}},
+				map[string]string{},
+				"",
+			)
+
+			Expect(err).To(MatchError(ContainSubstring(
+				"Password is required in the source definition",
+			)))
+		})
 	})
 
 	Context("when no id file exists", func() {

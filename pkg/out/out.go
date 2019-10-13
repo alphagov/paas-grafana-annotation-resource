@@ -25,6 +25,12 @@ func Out(
 	env map[string]string,
 	dirPath string) (types.InOutResponse, error) {
 
+	err := req.Source.Validate()
+
+	if err != nil {
+		return types.InOutResponse{}, err
+	}
+
 	if req.Params.Path == nil {
 		// when we are not given a path, we are creating a new annotation
 		return outCreate(req, env, dirPath)
