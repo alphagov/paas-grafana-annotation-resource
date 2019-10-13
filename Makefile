@@ -2,6 +2,10 @@
 test:
 	ginkgo -r pkg
 
+.PHONY: integration-test
+integration-test:
+	ginkgo -v integration
+
 .PHONY: compile
 compile: compile-check compile-in compile-out
 
