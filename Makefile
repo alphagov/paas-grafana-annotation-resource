@@ -1,3 +1,7 @@
+.PHONY: test
+test:
+	ginkgo -r pkg
+
 .PHONY: compile
 compile: compile-check compile-in compile-out
 
