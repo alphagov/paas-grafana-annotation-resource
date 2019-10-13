@@ -296,6 +296,16 @@ var _ = Describe("Out", func() {
 						err = json.Unmarshal(bodyBytes, &requestBody)
 						Expect(err).NotTo(HaveOccurred())
 
+						Expect(requestBody.Text).To(
+							Equal("build-id http://concourse-url/teams/build-team-name/pipelines/build-pipeline-name/jobs/build-job-name/builds/build-name"),
+							"Text interpolation should work",
+						)
+
+						Expect(requestBody.Tags).To(
+							ConsistOf("p1", "p2"),
+							"Tags should be present and correct",
+						)
+
 						Expect(requestBody.TimeEnd).To(BeNumerically(
 							"==", time.Now().Unix()*int64(1000), 1500,
 						), "TimeEnd should approximately be now")
@@ -317,6 +327,15 @@ var _ = Describe("Out", func() {
 					Username: username,
 					Password: password,
 				},
+
+				Params: types.ResourceParams{
+					Path: stringAddress("resource-name"),
+
+					Tags: []string{"p2", "p1"},
+					Env: map[string]string{
+						"ENV_VAR_PARAM": "env-var-param",
+					},
+				},
 			}
 		})
 
@@ -336,10 +355,19 @@ var _ = Describe("Out", func() {
 			resp, err := out.Out(req, env, *workingDirectory)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(resp.Metadata).To(HaveLen(1))
+			Expect(resp.Metadata).To(HaveLen(3))
 
 			Expect(resp.Metadata).To(ContainElement(
 				types.ResourceMetadataPair{Name: "id", Value: "12345"},
+			))
+			Expect(resp.Metadata).To(ContainElement(
+				types.ResourceMetadataPair{Name: "tags", Value: "p1, p2"},
+			))
+			Expect(resp.Metadata).To(ContainElement(
+				types.ResourceMetadataPair{
+					Name:  "text",
+					Value: "build-id http://concourse-url/teams/build-team-name/pipelines/build-pipeline-name/jobs/build-job-name/builds/build-name",
+				},
 			))
 		})
 	})

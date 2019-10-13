@@ -157,15 +157,41 @@ func outUpdate(
 	env map[string]string,
 	dirPath string,
 ) (types.InOutResponse, error) {
-
-	idBytes, err := ioutil.ReadFile(pathToIDFile(dirPath))
+	idBytes, err := ioutil.ReadFile(
+		pathToIDFile(path.Join(dirPath, *req.Params.Path)),
+	)
 
 	if err != nil {
 		return types.InOutResponse{}, err
 	}
 
-	requestBody := types.GrafanaCreateAnnotationRequest{
+	combinedTags := tags.CombineTags(req.Source.Tags, req.Params.Tags)
+
+	actualTemplate := defaultTemplate
+	if req.Params.Template != nil {
+		actualTemplate = *req.Params.Template
+	}
+
+	text := os.Expand(actualTemplate, func(varName string) string {
+		if val, ok := req.Params.Env[varName]; ok {
+			return val
+		}
+
+		if val, ok := req.Source.Env[varName]; ok {
+			return val
+		}
+
+		if val, ok := env[varName]; ok {
+			return val
+		}
+
+		return "nil"
+	})
+
+	requestBody := types.GrafanaUpdateAnnotationRequest{
 		TimeEnd: time.Now().Unix() * int64(1000),
+		Tags:    combinedTags,
+		Text:    text,
 	}
 
 	requestBodyBytes, err := json.Marshal(requestBody)
@@ -215,6 +241,8 @@ func outUpdate(
 		},
 		Metadata: []types.ResourceMetadataPair{
 			{Name: "id", Value: annotationID},
+			{Name: "tags", Value: tags.FormatTags(combinedTags)},
+			{Name: "text", Value: text},
 		},
 	}, nil
 }

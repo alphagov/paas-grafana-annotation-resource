@@ -58,7 +58,9 @@ type GrafanaCreateAnnotationRequest struct {
 }
 
 type GrafanaUpdateAnnotationRequest struct {
-	TimeEnd int64 `json:"timeEnd"`
+	TimeEnd int64    `json:"timeEnd"`
+	Tags    []string `json:"tags"`
+	Text    string   `json:"text"`
 }
 
 type GrafanaCreateAnnotationResponse struct {
