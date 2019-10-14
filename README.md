@@ -103,6 +103,64 @@ jobs:
           path: run-smoke-tests-annotation
 ```
 
+Configuration
+-------------
+
+The source can be configured like so:
+
+```
+resources:
+  - name: my-resource-name
+    type: grafana-annotation
+    source:
+
+      # Required
+      url: http://grafana:3000
+
+      # Required
+      username: admin
+
+      # Required
+      password: admin
+
+      # Optional
+      tags:
+        - tag1
+        - tag2
+        - ((environment))
+
+      # Optional
+      env:
+        MY_SRC_VAR: ((can_take_variables))
+```
+
+The params can be configured like so:
+
+```
+- put: my-resource-name
+  params:
+
+    # Optional
+    # These get merged with the env block from source
+    env:
+      MY_PARAM_VAR: foo-bar
+
+    # Optional
+    # Can use environment variables
+    template:  "${BUILD_ID} ; ${MY_SRC_VAR} ; ${MY_PARAM_VAR}"
+
+    # Optional
+    # Are merged with tags from source
+    tags:
+      - started
+
+    # Optional
+    # See example above
+    # - Should not be present if creating a resource
+    # - Should be the resource name if updating an annotation
+    path: my-resource-name
+```
+
 Notes
 -----
 
