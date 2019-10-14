@@ -64,9 +64,10 @@ resources:
       url: http://grafana:3000
       username: admin
       password: admin
-    tags:
-      - run-from-concourse
-      - smoke-tests
+
+      tags:
+        - run-from-concourse
+        - smoke-tests
 ```
 
 Then use the resource:
