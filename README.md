@@ -6,8 +6,8 @@
 
 A resource for adding annotations to Grafana dashboards.
 
-The resource represents a single Grafana (`version >= 6.3`) and this resource
-can be used to add and update annotations using tags.
+The resource represents a single Grafana (`version >= 6.4`) and this resource
+can be used to add and update annotations using tags. Version `6.4` and above is required because the resource assumes that resources are represented by a single annotation.
 
 Usage
 -----
