@@ -117,10 +117,13 @@ resources:
       # Required
       url: http://grafana:3000
 
-      # Required
+      # Optional; required if 'username' is absent
+      api_token: 123456789
+
+      # Optional; required if 'api_token' is absent
       username: admin
 
-      # Required
+      # Optional; required if 'username' is present
       password: admin
 
       # Optional
