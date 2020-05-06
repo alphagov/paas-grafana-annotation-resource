@@ -43,8 +43,13 @@ func addGrafanaAPIHeaders(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 }
 
-func addGrafanaAuth(req *http.Request, username string, password string) {
-	req.SetBasicAuth(username, password)
+func addGrafanaAuth(req *http.Request, source types.ResourceSource) {
+	if source.APIToken != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", source.APIToken))
+		return
+	}
+
+	req.SetBasicAuth(source.Username, source.Password)
 }
 
 func outCreate(
@@ -101,7 +106,7 @@ func outCreate(
 	}
 
 	addGrafanaAPIHeaders(httpReq)
-	addGrafanaAuth(httpReq, req.Source.Username, req.Source.Password)
+	addGrafanaAuth(httpReq, req.Source)
 
 	httpResp, err := http.DefaultClient.Do(httpReq)
 
@@ -210,7 +215,7 @@ func outUpdate(
 	}
 
 	addGrafanaAPIHeaders(httpReq)
-	addGrafanaAuth(httpReq, req.Source.Username, req.Source.Password)
+	addGrafanaAuth(httpReq, req.Source)
 
 	httpResp, err := http.DefaultClient.Do(httpReq)
 

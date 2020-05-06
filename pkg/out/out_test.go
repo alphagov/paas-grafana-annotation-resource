@@ -102,7 +102,7 @@ var _ = Describe("Out", func() {
 	})
 
 	Context("when validating the source", func() {
-		It("returns an error when there is no URL", func() {
+		It("returns an error when there is no 'url' defined in the source", func() {
 			_, err := out.Out(
 				types.OutRequest{Source: types.ResourceSource{}},
 				map[string]string{},
@@ -110,11 +110,11 @@ var _ = Describe("Out", func() {
 			)
 
 			Expect(err).To(MatchError(ContainSubstring(
-				"URL is required in the source definition",
+				"'url' is required in the source definition",
 			)))
 		})
 
-		It("returns an error when there is no username", func() {
+		It("returns an error when there is no 'username' or 'api_token' defined in the source", func() {
 			_, err := out.Out(
 				types.OutRequest{Source: types.ResourceSource{
 					URL: "http://grafana",
@@ -124,11 +124,11 @@ var _ = Describe("Out", func() {
 			)
 
 			Expect(err).To(MatchError(ContainSubstring(
-				"Username is required in the source definition",
+				"'username' or 'api_token' are required in the source definition",
 			)))
 		})
 
-		It("returns an error when there is no password", func() {
+		It("returns an error when there is a 'username' but no 'password'", func() {
 			_, err := out.Out(
 				types.OutRequest{Source: types.ResourceSource{
 					URL:      "http://grafana",
@@ -139,7 +139,7 @@ var _ = Describe("Out", func() {
 			)
 
 			Expect(err).To(MatchError(ContainSubstring(
-				"Password is required in the source definition",
+				"'password' is required in the source definition when 'username' is present",
 			)))
 		})
 	})
