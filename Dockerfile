@@ -1,4 +1,4 @@
-FROM golang:1.13
+FROM golang:1.14
 
 RUN mkdir -p /opt/resource
 RUN mkdir -p /opt/code/bin

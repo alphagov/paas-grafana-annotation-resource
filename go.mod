@@ -1,6 +1,6 @@
 module github.com/alphagov/paas-grafana-annotation-resource
 
-go 1.13
+go 1.14
 
 require (
 	github.com/jarcoal/httpmock v1.0.4
