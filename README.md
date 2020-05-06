@@ -178,3 +178,19 @@ pipeline.
 
 - Currently updating individual dashboards and panels is not supported. Use
 tags to view your resources instead.
+
+Contributing
+------------
+
+Please raise a pull request, once you agree with the [LICENSE](/LICENSE).
+
+To run the integration tests please first run:
+
+```
+docker-compose build
+docker-compose up -d
+docker-compose down
+```
+
+which will ensure that all software components are present, built, and ready to
+test against.
