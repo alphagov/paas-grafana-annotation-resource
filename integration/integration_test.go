@@ -156,6 +156,24 @@ var _ = Describe("Happy path", func() {
 			ContainSubstring(`"text":"12345 nil/teams/nil/pipelines/nil/jobs/nil/builds/nil"`),
 			MatchRegexp(`"time":`),
 		))
+
+		runCheckCmd := exec.Command(
+			"docker-compose", "exec", "-T", "resource",
+			"/opt/resource/check", "/",
+		)
+		runCheckCmd.Stdin = strings.NewReader(`{"source": {"url": "http://grafana:3000", "username": "admin", "password": "admin"}}`)
+		session, err = gexec.Start(runCheckCmd, GinkgoWriter, GinkgoWriter)
+		Expect(err).ShouldNot(HaveOccurred())
+
+		session.Wait(15 * time.Second)
+
+		fmt.Println(string(session.Out.Contents()))
+		fmt.Println(string(session.Err.Contents()))
+
+		Expect(
+			string(session.Wait(15 * time.Second).Out.Contents()),
+		).To(Equal(`[{"id":"1"}]
+`))
 	})
 
 	AfterEach(func() {
