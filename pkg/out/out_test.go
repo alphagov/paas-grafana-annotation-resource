@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/grafana-tools/sdk"
 	"github.com/jarcoal/httpmock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -35,36 +36,6 @@ var _ = Describe("Out", func() {
 
 	var (
 		workingDirectory *string
-
-		basicAuthCheckResponderWrapper = func(
-			wrapped httpmock.Responder,
-		) httpmock.Responder {
-			return func(req *http.Request) (*http.Response, error) {
-				rUsername, rPassword, rAuthEnabled := req.BasicAuth()
-
-				Expect(rAuthEnabled).To(
-					Equal(true), "Basic auth should be enabled",
-				)
-
-				Expect(rUsername).To(
-					Equal(username),
-					fmt.Sprintf(
-						"Basic auth username should be '%s' was '%s'",
-						username, rUsername,
-					),
-				)
-
-				Expect(rPassword).To(
-					Equal(password),
-					fmt.Sprintf(
-						"Basic auth password should be '%s' was '%s'",
-						password, rPassword,
-					),
-				)
-
-				return wrapped(req)
-			}
-		}
 
 		env map[string]string = map[string]string{
 			"BUILD_ID":            "build-id",
@@ -151,38 +122,36 @@ var _ = Describe("Out", func() {
 
 		BeforeEach(func() {
 			httpmock.RegisterResponder(
-				"POST", "http://grafana/api/annotations",
-				basicAuthCheckResponderWrapper(
-					func(req *http.Request) (*http.Response, error) {
-						bodyBytes, err := ioutil.ReadAll(req.Body)
-						Expect(err).NotTo(HaveOccurred())
+				"POST", fmt.Sprintf("http://%s:%s@grafana/api/annotations", username, password),
+				func(req *http.Request) (*http.Response, error) {
+					bodyBytes, err := ioutil.ReadAll(req.Body)
+					Expect(err).NotTo(HaveOccurred())
 
-						var requestBody types.GrafanaCreateAnnotationRequest
-						err = json.Unmarshal(bodyBytes, &requestBody)
-						Expect(err).NotTo(HaveOccurred())
+					var requestBody sdk.CreateAnnotationRequest
+					err = json.Unmarshal(bodyBytes, &requestBody)
+					Expect(err).NotTo(HaveOccurred())
 
-						Expect(requestBody.Text).To(
-							Equal("build-id env-var-source env-var-param"),
-							"Text interpolation should work",
-						)
+					Expect(requestBody.Text).To(
+						Equal("build-id env-var-source env-var-param"),
+						"Text interpolation should work",
+					)
 
-						Expect(requestBody.Tags).To(
-							ConsistOf("p1", "p2", "s1", "s2"),
-							"Tags should be present and correct",
-						)
+					Expect(requestBody.Tags).To(
+						ConsistOf("p1", "p2", "s1", "s2"),
+						"Tags should be present and correct",
+					)
 
-						Expect(requestBody.Time).To(BeNumerically(
-							"==", time.Now().Unix()*int64(1000), 1500,
-						), "Time should approximately be now")
+					Expect(requestBody.Time).To(BeNumerically(
+						"==", time.Now().Unix()*int64(1000), 1500,
+					), "Time should approximately be now")
 
-						responder := httpmock.NewStringResponder(
-							200,
-							`{ "message":"Annotation added", "id": 12345 }`,
-						)
+					responder := httpmock.NewStringResponder(
+						200,
+						`{ "message":"Annotation added", "id": 12345 }`,
+					)
 
-						return responder(req)
-					},
-				),
+					return responder(req)
+				},
 			)
 
 			req = types.OutRequest{
@@ -282,38 +251,36 @@ var _ = Describe("Out", func() {
 			)).NotTo(HaveOccurred(), "Could not write id file needed for test")
 
 			httpmock.RegisterResponder(
-				"PATCH", "http://grafana/api/annotations/"+annotationID,
-				basicAuthCheckResponderWrapper(
-					func(req *http.Request) (*http.Response, error) {
-						bodyBytes, err := ioutil.ReadAll(req.Body)
-						Expect(err).NotTo(HaveOccurred())
+				"PATCH", fmt.Sprintf("http://%s:%s@grafana/api/annotations/%s", username, password, annotationID),
+				func(req *http.Request) (*http.Response, error) {
+					bodyBytes, err := ioutil.ReadAll(req.Body)
+					Expect(err).NotTo(HaveOccurred())
 
-						var requestBody types.GrafanaUpdateAnnotationRequest
-						err = json.Unmarshal(bodyBytes, &requestBody)
-						Expect(err).NotTo(HaveOccurred())
+					var requestBody sdk.PatchAnnotationRequest
+					err = json.Unmarshal(bodyBytes, &requestBody)
+					Expect(err).NotTo(HaveOccurred())
 
-						Expect(requestBody.Text).To(
-							Equal("build-id http://concourse-url/teams/build-team-name/pipelines/build-pipeline-name/jobs/build-job-name/builds/build-name"),
-							"Text interpolation should work",
-						)
+					Expect(requestBody.Text).To(
+						Equal("build-id http://concourse-url/teams/build-team-name/pipelines/build-pipeline-name/jobs/build-job-name/builds/build-name"),
+						"Text interpolation should work",
+					)
 
-						Expect(requestBody.Tags).To(
-							ConsistOf("p1", "p2"),
-							"Tags should be present and correct",
-						)
+					Expect(requestBody.Tags).To(
+						ConsistOf("p1", "p2"),
+						"Tags should be present and correct",
+					)
 
-						Expect(requestBody.TimeEnd).To(BeNumerically(
-							"==", time.Now().Unix()*int64(1000), 1500,
-						), "TimeEnd should approximately be now")
+					Expect(requestBody.TimeEnd).To(BeNumerically(
+						"==", time.Now().Unix()*int64(1000), 1500,
+					), "TimeEnd should approximately be now")
 
-						responder := httpmock.NewStringResponder(
-							200,
-							`{ "message":"Annotation patched"}`,
-						)
+					responder := httpmock.NewStringResponder(
+						200,
+						`{ "message":"Annotation patched"}`,
+					)
 
-						return responder(req)
-					},
-				),
+					return responder(req)
+				},
 			)
 
 			req = types.OutRequest{

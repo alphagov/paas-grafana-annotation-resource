@@ -51,20 +51,3 @@ type InOutResponse struct {
 	Version  ResourceVersion        `json:"version"`
 	Metadata []ResourceMetadataPair `json:"metadata"`
 }
-
-type GrafanaCreateAnnotationRequest struct {
-	Time int64    `json:"time"`
-	Tags []string `json:"tags"`
-	Text string   `json:"text"`
-}
-
-type GrafanaUpdateAnnotationRequest struct {
-	TimeEnd int64    `json:"timeEnd"`
-	Tags    []string `json:"tags"`
-	Text    string   `json:"text"`
-}
-
-type GrafanaCreateAnnotationResponse struct {
-	Message string `json:"message"`
-	ID      int    `json:"id"`
-}
