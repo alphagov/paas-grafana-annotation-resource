@@ -3,19 +3,18 @@ name: ci
 on: [push]
 
 jobs:
-
   build-and-test:
     name: build
     runs-on: ubuntu-latest
     steps:
       - name: setup
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # Setup-go v5
         with:
           go-version: 1.14
           id: go
 
       - name: checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
 
       - name: deps
         run: |
