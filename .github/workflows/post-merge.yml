@@ -1,0 +1,22 @@
+name: Post Merge
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  tag-release:
+    needs:
+      - tests
+    permissions:
+      contents: write
+    uses: alphagov/pay-ci/.github/workflows/_create-alpha-release-tag.yml@master
