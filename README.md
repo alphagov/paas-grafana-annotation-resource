@@ -188,7 +188,7 @@ To run the integration tests please first run:
 
 ```
 docker-compose build
-docker-compose up -d --wait
+docker-compose up -d
 docker-compose down
 ```
 
