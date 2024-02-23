@@ -50,7 +50,7 @@ resource_types:
   - name: grafana-annotation
     type: docker-image
     source:
-      repository: gdsre/grafana-annotation-resource
+      repository: governmentdigitalservice/pay-grafana-annotation-resource
       tag: latest
 ```
 
