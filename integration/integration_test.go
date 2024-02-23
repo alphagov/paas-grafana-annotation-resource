@@ -35,7 +35,7 @@ var _ = Describe("Happy path", func() {
 
 		for i := 1; i <= 10; i++ {
 			curlCmd := exec.Command(
-				"docker-compose", "exec", "-T", "resource",
+				"docker-compose", "exec", "-T", "grafana",
 				"curl",
 				"-u", "admin:admin", "-sf", "-m", "10",
 				"http://grafana:3000/api/health",
