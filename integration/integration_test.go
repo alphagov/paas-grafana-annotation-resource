@@ -27,36 +27,11 @@ var _ = Describe("Happy path", func() {
 
 	BeforeEach(func() {
 		upCmd := exec.Command(
-			"docker-compose", "up", "--detach", "--force-recreate",
+			"docker-compose", "up", "--detach", "--force-recreate", "--wait",
 		)
 		session, err := gexec.Start(upCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
 		Eventually(session, 60).Should(gexec.Exit(0))
-
-		for i := 1; i <= 10; i++ {
-			curlCmd := exec.Command(
-				"docker-compose", "exec", "-T", "resource",
-				"curl",
-				"-u", "admin:admin", "-sf", "-m", "10",
-				"http://grafana:3000/api/health",
-			)
-
-			session, _ := gexec.Start(curlCmd, GinkgoWriter, GinkgoWriter)
-
-			session.Wait(15 * time.Second)
-
-			if session.ExitCode() == 0 {
-				break
-			}
-
-			if i == 10 {
-				Expect(session.ExitCode()).To(
-					Equal(0), "Not healthy after 10 attempts",
-				)
-			}
-
-			time.Sleep(1 * time.Second)
-		}
 	})
 
 	It("should create an annotation", func() {
