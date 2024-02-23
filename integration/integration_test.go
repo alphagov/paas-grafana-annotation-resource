@@ -61,7 +61,7 @@ var _ = Describe("Happy path", func() {
 
 	It("should create an annotation", func() {
 		beforeCreateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "resource",
+			"docker-compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
@@ -92,7 +92,7 @@ var _ = Describe("Happy path", func() {
 `))
 
 		afterCreateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "resource",
+			"docker-compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
@@ -134,7 +134,7 @@ var _ = Describe("Happy path", func() {
 `))
 
 		afterUpdateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "resource",
+			"docker-compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
