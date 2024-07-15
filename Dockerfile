@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine@sha256:ace6cc3fe58d0c7b12303c57afe6d6724851152df55e08057b43990b927ad5e8 AS builder
+FROM golang:1.22-alpine@sha256:2b0f0a0d71935c9ecbff2425eff8eb3bd63a6a560f75879b6535704dc059b84e AS builder
 
 RUN apk add make
 RUN mkdir -p /opt/resource
