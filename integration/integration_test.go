@@ -19,7 +19,7 @@ func TestIntegration(t *testing.T) {
 
 var _ = Describe("Happy path", func() {
 	BeforeSuite(func() {
-		buildCmd := exec.Command("docker-compose", "build")
+		buildCmd := exec.Command("docker", "compose", "build")
 		session, err := gexec.Start(buildCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
 		Eventually(session, 60).Should(gexec.Exit(0))
@@ -27,7 +27,7 @@ var _ = Describe("Happy path", func() {
 
 	BeforeEach(func() {
 		upCmd := exec.Command(
-			"docker-compose", "up", "--detach", "--force-recreate",
+			"docker", "compose", "up", "--detach", "--force-recreate",
 		)
 		session, err := gexec.Start(upCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
@@ -35,7 +35,7 @@ var _ = Describe("Happy path", func() {
 
 		for i := 1; i <= 10; i++ {
 			curlCmd := exec.Command(
-				"docker-compose", "exec", "-T", "grafana",
+				"docker", "compose", "exec", "-T", "grafana",
 				"curl",
 				"-u", "admin:admin", "-sf", "-m", "10",
 				"http://grafana:3000/api/health",
@@ -61,7 +61,7 @@ var _ = Describe("Happy path", func() {
 
 	It("should create an annotation", func() {
 		beforeCreateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "grafana",
+			"docker", "compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
@@ -74,7 +74,7 @@ var _ = Describe("Happy path", func() {
 		).To(Equal("[]"))
 
 		runCreateOutCmd := exec.Command(
-			"docker-compose", "exec", "-T", "-e", "BUILD_ID=12345", "resource",
+			"docker", "compose", "exec", "-T", "-e", "BUILD_ID=12345", "resource",
 			"/opt/resource/out", "/tmp",
 		)
 		runCreateOutCmd.Stdin = strings.NewReader(`{"source": {"url": "http://grafana:3000", "username": "admin", "password": "admin"}, "params": {}}`)
@@ -92,7 +92,7 @@ var _ = Describe("Happy path", func() {
 `))
 
 		afterCreateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "grafana",
+			"docker", "compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
@@ -116,7 +116,7 @@ var _ = Describe("Happy path", func() {
 		))
 
 		runUpdateOutCmd := exec.Command(
-			"docker-compose", "exec", "-T", "-e", "BUILD_ID=12345", "resource",
+			"docker", "compose", "exec", "-T", "-e", "BUILD_ID=12345", "resource",
 			"/opt/resource/out", "/",
 		)
 		runUpdateOutCmd.Stdin = strings.NewReader(`{"source": {"url": "http://grafana:3000", "username": "admin", "password": "admin"}, "params": {"path": "/tmp"}}`)
@@ -134,7 +134,7 @@ var _ = Describe("Happy path", func() {
 `))
 
 		afterUpdateCmd := exec.Command(
-			"docker-compose", "exec", "-T", "grafana",
+			"docker", "compose", "exec", "-T", "grafana",
 			"curl",
 			"-u", "admin:admin", "-sf", "-m", "10",
 			"http://grafana:3000/api/annotations",
@@ -160,7 +160,7 @@ var _ = Describe("Happy path", func() {
 
 	AfterEach(func() {
 		upCmd := exec.Command(
-			"docker-compose", "down",
+			"docker", "compose", "down",
 		)
 		session, err := gexec.Start(upCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
