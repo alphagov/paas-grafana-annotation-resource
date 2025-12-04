@@ -1,13 +1,15 @@
 package integration_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"os/exec"
 	"strings"
 	"testing"
 	"time"
 
-	. "github.com/onsi/ginkgo"
+	"github.com/alphagov/paas-grafana-annotation-resource/pkg/tags"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 )
@@ -17,13 +19,18 @@ func TestIntegration(t *testing.T) {
 	RunSpecs(t, "Integration Suite")
 }
 
+var _ = BeforeSuite(func() {
+	buildCmd := exec.Command("docker", "compose", "build")
+	session, err := gexec.Start(buildCmd, GinkgoWriter, GinkgoWriter)
+	Expect(err).ShouldNot(HaveOccurred())
+	Eventually(session, 60).Should(gexec.Exit(0))
+})
+
+var _ = AfterSuite(func() {
+	gexec.KillAndWait()
+})
+
 var _ = Describe("Happy path", func() {
-	BeforeSuite(func() {
-		buildCmd := exec.Command("docker", "compose", "build")
-		session, err := gexec.Start(buildCmd, GinkgoWriter, GinkgoWriter)
-		Expect(err).ShouldNot(HaveOccurred())
-		Eventually(session, 60).Should(gexec.Exit(0))
-	})
 
 	BeforeEach(func() {
 		upCmd := exec.Command(
@@ -73,11 +80,15 @@ var _ = Describe("Happy path", func() {
 			string(session.Wait(15 * time.Second).Out.Contents()),
 		).To(Equal("[]"))
 
+		dummyTags := []string{"tag1", "tag2"}
+		jsonTags, _ := json.Marshal(dummyTags)
+		outString := fmt.Sprintf(`{"source": {"url": "http://grafana:3000", "username": "admin", "password": "admin"}, "params": {"tags": %s}}`, jsonTags)
+
 		runCreateOutCmd := exec.Command(
 			"docker", "compose", "exec", "-T", "-e", "BUILD_ID=12345", "resource",
 			"/opt/resource/out", "/tmp",
 		)
-		runCreateOutCmd.Stdin = strings.NewReader(`{"source": {"url": "http://grafana:3000", "username": "admin", "password": "admin"}, "params": {}}`)
+		runCreateOutCmd.Stdin = strings.NewReader(outString)
 		session, err = gexec.Start(runCreateOutCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
 
@@ -88,8 +99,8 @@ var _ = Describe("Happy path", func() {
 
 		Expect(
 			string(session.Wait(15 * time.Second).Out.Contents()),
-		).To(Equal(`{"version":{"id":"1"},"metadata":[{"name":"id","value":"1"},{"name":"tags","value":""},{"name":"text","value":"12345 nil/teams/nil/pipelines/nil/jobs/nil/builds/nil"}]}
-`))
+		).To(Equal(fmt.Sprintf(`{"version":{"id":"1"},"metadata":[{"name":"id","value":"1"},{"name":"tags","value":"%s"},{"name":"text","value":"12345 nil/teams/nil/pipelines/nil/jobs/nil/builds/nil"}]}
+`, tags.FormatTags(dummyTags))))
 
 		afterCreateCmd := exec.Command(
 			"docker", "compose", "exec", "-T", "grafana",
@@ -110,7 +121,7 @@ var _ = Describe("Happy path", func() {
 		).To(SatisfyAll(
 			Not(Equal("[]")),
 			ContainSubstring(`"id":1`),
-			ContainSubstring(`"tags":[]`),
+			ContainSubstring(fmt.Sprintf(`"tags":%s`, jsonTags)),
 			ContainSubstring(`"text":"12345 nil/teams/nil/pipelines/nil/jobs/nil/builds/nil"`),
 			MatchRegexp(`"time":`),
 		))
@@ -152,7 +163,6 @@ var _ = Describe("Happy path", func() {
 		).To(SatisfyAll(
 			Not(Equal("[]")),
 			ContainSubstring(`"id":1`),
-			ContainSubstring(`"tags":[]`),
 			ContainSubstring(`"text":"12345 nil/teams/nil/pipelines/nil/jobs/nil/builds/nil"`),
 			MatchRegexp(`"time":`),
 		))
@@ -165,9 +175,5 @@ var _ = Describe("Happy path", func() {
 		session, err := gexec.Start(upCmd, GinkgoWriter, GinkgoWriter)
 		Expect(err).ShouldNot(HaveOccurred())
 		Eventually(session, 60).Should(gexec.Exit(0))
-	})
-
-	AfterSuite(func() {
-		gexec.KillAndWait()
 	})
 })
