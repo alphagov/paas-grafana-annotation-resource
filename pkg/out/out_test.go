@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/alphagov/paas-grafana-annotation-resource/pkg/out"
@@ -26,6 +26,14 @@ func TestCheck(t *testing.T) {
 func stringAddress(s string) *string {
 	return &s
 }
+
+var _ = BeforeSuite(func() {
+	httpmock.Activate()
+})
+
+var _ = AfterSuite(func() {
+	httpmock.DeactivateAndReset()
+})
 
 var _ = Describe("Out", func() {
 	const (
@@ -75,14 +83,6 @@ var _ = Describe("Out", func() {
 			"ATC_EXTERNAL_URL":    "http://concourse-url",
 		}
 	)
-
-	BeforeSuite(func() {
-		httpmock.Activate()
-	})
-
-	AfterSuite(func() {
-		httpmock.DeactivateAndReset()
-	})
 
 	BeforeEach(func() {
 		httpmock.Reset()

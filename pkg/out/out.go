@@ -122,10 +122,8 @@ func outCreate(
 
 	if httpResp.StatusCode != 200 {
 		return types.InOutResponse{}, fmt.Errorf(
-			fmt.Sprintf(
-				"Expected 200 from Grafana API, %d received: %s",
-				httpResp.StatusCode, string(respBodyBytes),
-			),
+			"Expected 200 from Grafana API, %d received: %s",
+			httpResp.StatusCode, string(respBodyBytes),
 		)
 	}
 
@@ -231,10 +229,8 @@ func outUpdate(
 
 	if httpResp.StatusCode != 200 {
 		return types.InOutResponse{}, fmt.Errorf(
-			fmt.Sprintf(
-				"Expected 200 from Grafana API, %d received: %s",
-				httpResp.StatusCode, string(respBodyBytes),
-			),
+			"Expected 200 from Grafana API, %d received: %s",
+			httpResp.StatusCode, string(respBodyBytes),
 		)
 	}
 
