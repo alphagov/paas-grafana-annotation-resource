@@ -32,7 +32,7 @@ services:
       POSTGRES_PASSWORD: concourse_pass
 
   concourse:
-    image: concourse/concourse:7.14.3
+    image: concourse/concourse:8.0.2
     privileged: true
     command: quickstart
     depends_on: [concourse-db]
