@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/types"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/types"
 )
 
 func In(req types.InRequest, dirPath string) (types.InOutResponse, error) {

@@ -1,4 +1,4 @@
-module github.com/alphagov/paas-grafana-annotation-resource
+module github.com/govuk-pay/paas-grafana-annotation-resource
 
 go 1.25.0
 
