@@ -9,8 +9,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/in"
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/types"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/in"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/types"
 )
 
 func TestCheck(t *testing.T) {

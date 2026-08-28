@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/tags"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/tags"
 )
 
 func TestTags(t *testing.T) {

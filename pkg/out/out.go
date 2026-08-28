@@ -10,8 +10,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/tags"
-	"github.com/alphagov/paas-grafana-annotation-resource/pkg/types"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/tags"
+	"github.com/govuk-pay/paas-grafana-annotation-resource/pkg/types"
 )
 
 const defaultTemplate = "${BUILD_ID} ${ATC_EXTERNAL_URL}/teams/${BUILD_TEAM_NAME}/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
