@@ -8,9 +8,9 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 0
   labels:
-  - dependencies
-  - govuk-pay
-  - go
+    - dependencies
+    - govuk-pay
+    - go
 - package-ecosystem: docker
   directory: "/"
   schedule:
@@ -18,9 +18,9 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 10
   labels:
-  - dependencies
-  - govuk-pay
-  - docker
+    - dependencies
+    - govuk-pay
+    - docker
 - package-ecosystem: docker-compose
   directory: "/"
   schedule:
@@ -28,9 +28,9 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 10
   labels:
-  - dependencies
-  - govuk-pay
-  - docker
+    - dependencies
+    - govuk-pay
+    - docker
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
@@ -38,15 +38,14 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 0
   labels:
-  - dependencies
-  - govuk-pay
-  - github_actions
+    - dependencies
+    - govuk-pay
+    - github_actions
 - package-ecosystem: github-actions
   directory: /.github/workflows
   schedule:
     interval: daily
-    time: 03:00
+    time: "03:00"
   open-pull-requests-limit: 3
-  cooldown: 3
   allow:
-  - dependency-name: govuk-pay/pay-ci/*
+    - dependency-name: govuk-pay/pay-ci/*
